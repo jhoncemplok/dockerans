@@ -1,0 +1,26 @@
+- hosts: server
+  vars:
+   - image: dockthor/apache-dockans:latest
+     task:
+      - name: install python-docker di ubuntu
+        apt:
+         name:
+          - python3
+          - python3-docker
+          - python
+          - python-docker
+         state: present
+        when: ansible_distribution == "ubuntu"
+      - name: pull image docker
+        docker_image:
+         name: "{{ image }}"
+         state: present
+         force: yes
+      - name: create containers
+        docker_container:
+         name: docker-ansible
+         image: "{{ image }}"
+         state: started
+         published_ports:
+         - 10000:80
+         recreate: yes
